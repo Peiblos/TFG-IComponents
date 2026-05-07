@@ -1,0 +1,56 @@
+security:
+    password_hashers:
+        App\Entity\User:
+            algorithm: auto
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login:
+            pattern:  ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern:   ^/api
+            stateless: true
+            jwt: ~
+
+    access_control:
+        # Rutas públicas
+        - { path: ^/api, roles: PUBLIC_ACCESS, methods: [OPTIONS] }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
+
+        # - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
+        # - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        # - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/products, roles: PUBLIC_ACCESS }
+        - { path: ^/api/categories, roles: PUBLIC_ACCESS }
+        - { path: ^/api/brands, roles: PUBLIC_ACCESS }
+        - { path: ^/api/products/\d+, roles: PUBLIC_ACCESS }
+        - { path: ^/api/product-reviews/product, roles: PUBLIC_ACCESS }
+
+        # Rutas protegidas
+        - { path: ^/api/cart, roles: ROLE_USER }
+        - { path: ^/api/orders, roles: ROLE_USER }
+        - { path: ^/api/addresses, roles: ROLE_USER }
+        - { path: ^/api/product-reviews, roles: ROLE_USER }
+
+        # Admin
+        - { path: ^/api/admin, roles: ROLE_ADMIN }
+
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

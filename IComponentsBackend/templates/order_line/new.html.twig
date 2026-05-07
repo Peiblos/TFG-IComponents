@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New OrderLine{% endblock %}
+
+{% block body %}
+    <h1>Create new OrderLine</h1>
+
+    {{ include('order_line/_form.html.twig') }}
+
+    <a href="{{ path('app_order_line_index') }}">back to list</a>
+{% endblock %}
